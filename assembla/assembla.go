@@ -27,7 +27,7 @@ type Client struct {
 	baseUrl *url.URL
 	apiKey, apiSecret string
 	authType authType
-	userService *UserService
+	UserService *UserService
 }
 
 func NewClient(httpClient *http.Client, apiKey string, apiSecret string) *Client{
@@ -46,7 +46,7 @@ func newClient(httpClient *http.Client) *Client {
 		httpClient = http.DefaultClient
 	}
 	c := &Client{client:httpClient}
-	c.userService = &UserService{client:c}
+	c.UserService = &UserService{client:c}
 	return c
 }
 
