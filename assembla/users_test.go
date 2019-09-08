@@ -2,14 +2,21 @@ package assembla
 
 import (
 	"github.com/tj/assert"
+	"os"
 	"testing"
 )
 
+var (
+	apiKey, apiKeyExists      = os.LookupEnv("ASSEMBLA_KEY")
+	apiSecret, apiSecretExits = os.LookupEnv("ASSEMBLA_SECRET_KEY")
+)
 
-func Test_User(t *testing.T){
-	c := NewClient(nil,"06aa938f884f26db76e9","4c9a0ff184ead06bb5837fdac9357a5c88d5a5c8")
-	user,resp,err := c.Users.ListAuthenticatedUser()
-	t.Log(resp.Body)
-	assert.NotNil(t,err)
-	t.Log(user)
+func Test_User(t *testing.T) {
+	if !apiKeyExists || !apiSecretExits {
+		t.SkipNow()
+	}
+	c := NewClient(nil, apiKey, apiSecret)
+	_, _, err := c.Users.ListAuthenticatedUser()
+	t.Log(err)
+	assert.Nil(t, err)
 }
