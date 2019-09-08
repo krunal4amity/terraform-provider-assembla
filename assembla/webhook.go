@@ -14,6 +14,7 @@ type Filter struct {
 	Code string `json:"code"`
 	Code_Reviews string `json:"code_reviews"`
 	Build_Tool string `json:"build_tool"`
+	Flow string `json:"flow"`
 	File string `json:"file"`
 	Ssh_Tool string `json:"ssh_tool"`
 	Scrum_Reports string `json:"scrum_reports"`

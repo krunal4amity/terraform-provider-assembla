@@ -8,6 +8,11 @@ import(
 func resourceWebhookBasic() *schema.Resource{
 	return &schema.Resource{
 		Schema:map[string]*schema.Schema{
+			"space_name":{
+				Type:schema.TypeString,
+				Required:true,
+				Description:"name of the space",
+			},
 			"title":{
 				Type:schema.TypeString,
 				Required:true,
@@ -101,13 +106,78 @@ func resourceWebhookBasic() *schema.Resource{
 }
 
 func resourceCreateWebhook(d *schema.ResourceData,m interface{}) error{
+	apiClient := m.(*assembla.Client)
+	createWh := assembla.Webhook{
+		Webhook :{
+			Title : d.Get("title").(string),
+			Authentication_Type : d.Get("auth_type").(int),
+			Http_Method: d.Get("http_method").(int),
+			External_Url: d.Get("external_url").(string),
+			Content : d.Get("content").(string),
+			Content_Type : d.Get("content_type").(string),
+			Filter : {
+				Code : d.Get("post_about_code").(string),
+				Code_Reviews: d.Get("post_about_code_reviews").(string),
+				Build_Tool: d.Get("post_about_build_tool").(string),
+				File: d.Get("post_about_file").(string),
+				Flow: d.Get("post_about_flow").(string),
+				Ssh_Tool : d.Get("post_about_ssh_tool").(string),
+				Scrum_Reports : d.Get("post_about_scrum_reports").(string),
+				Stream:d.Get("post_about_stream").(string),
+				Team: d.Get("post_about_team").(string),
+				Trac: d.Get("post_about_trac").(string),
+				Wiki: d.Get("post_about_wiki").(string),
+			},
+		},
+	}
+	wh,_,err := assembla.Webhooks.CreateWebhook(d.Get("space_name").(string),createWh)
+	if err != nil{
+		return err
+	}
+	d.SetId(wh.Id)
 	return nil
 }
 
 func resourceUpdateWebhook(d *schema.ResourceData,m interface{}) error{
-
+	apiClient := m.(*assembla.Client)
+	whId := d.Id()
+	createWh := assembla.Webhook{
+		Webhook :{
+			Title : d.Get("title").(string),
+			Authentication_Type : d.Get("auth_type").(int),
+			Http_Method: d.Get("http_method").(int),
+			External_Url: d.Get("external_url").(string),
+			Content : d.Get("content").(string),
+			Content_Type : d.Get("content_type").(string),
+			Filter : {
+				Code : d.Get("post_about_code").(string),
+				Code_Reviews: d.Get("post_about_code_reviews").(string),
+				Build_Tool: d.Get("post_about_build_tool").(string),
+				File: d.Get("post_about_file").(string),
+				Flow: d.Get("post_about_flow").(string),
+				Ssh_Tool : d.Get("post_about_ssh_tool").(string),
+				Scrum_Reports : d.Get("post_about_scrum_reports").(string),
+				Stream:d.Get("post_about_stream").(string),
+				Team: d.Get("post_about_team").(string),
+				Trac: d.Get("post_about_trac").(string),
+				Wiki: d.Get("post_about_wiki").(string),
+			},
+		},
+	}
+	wh,_,err := assembla.Webhooks.UpdateWebhook(d.Get("space_name").(string),whId,createWh)
+	if err != nil{
+		return err
+	}
+	return nil
 }
 
 func resourceDeleteWebhook(d *schema.ResourceData,m interface{}) error{
-
+	apiClient := m.(*assembla.Client)
+	whId := d.Id()
+	err := assembla.Webhooks.DeleteWebhook(d.Get("space_name").(string),whId)
+	if err != nil{
+		return err
+	}
+	d.SetId("")
+	return nil
 }
