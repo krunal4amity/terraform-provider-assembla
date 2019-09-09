@@ -19,6 +19,7 @@ type Filter struct {
 	Ssh_Tool string `json:"ssh_tool"`
 	Scrum_Reports string `json:"scrum_reports"`
 	Stream string `json:"stream"`
+	Team string `json:"team"`
 	Trac string `json:"trac"`
 	Wiki string `json:"wiki"`
 }

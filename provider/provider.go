@@ -21,8 +21,8 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 		ResourcesMap:map[string]*schema.Resource{
-			"webhook_basic":resourceWebhookBasic(),
-			"webhook_oauth1a":resourceWebhookOauth(),
+			"webhookbasic":resourceWebhookBasic(),
+			"webhookoauth1a":resourceWebhookOauth(),
 		},
 		ConfigureFunc:providerConfigure,
 	}

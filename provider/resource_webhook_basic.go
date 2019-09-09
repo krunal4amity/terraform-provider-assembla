@@ -3,6 +3,7 @@ package provider
 import(
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/krunal4amity/terraform-provider-assembla/assembla"
+	"strconv"
 )
 
 func resourceWebhookBasic() *schema.Resource{
@@ -108,14 +109,14 @@ func resourceWebhookBasic() *schema.Resource{
 func resourceCreateWebhook(d *schema.ResourceData,m interface{}) error{
 	apiClient := m.(*assembla.Client)
 	createWh := assembla.Webhook{
-		Webhook :{
+		Webhook :assembla.Hook{
 			Title : d.Get("title").(string),
 			Authentication_Type : d.Get("auth_type").(int),
 			Http_Method: d.Get("http_method").(int),
 			External_Url: d.Get("external_url").(string),
 			Content : d.Get("content").(string),
 			Content_Type : d.Get("content_type").(string),
-			Filter : {
+			Filter : assembla.Filter{
 				Code : d.Get("post_about_code").(string),
 				Code_Reviews: d.Get("post_about_code_reviews").(string),
 				Build_Tool: d.Get("post_about_build_tool").(string),
@@ -130,11 +131,11 @@ func resourceCreateWebhook(d *schema.ResourceData,m interface{}) error{
 			},
 		},
 	}
-	wh,_,err := assembla.Webhooks.CreateWebhook(d.Get("space_name").(string),createWh)
+	wh,_,err := apiClient.Webhooks.CreateWebhook(d.Get("space_name").(string),createWh)
 	if err != nil{
 		return err
 	}
-	d.SetId(wh.Id)
+	d.SetId(strconv.Itoa(wh.Id))
 	return nil
 }
 
@@ -142,14 +143,14 @@ func resourceUpdateWebhook(d *schema.ResourceData,m interface{}) error{
 	apiClient := m.(*assembla.Client)
 	whId := d.Id()
 	createWh := assembla.Webhook{
-		Webhook :{
+		Webhook :assembla.Hook{
 			Title : d.Get("title").(string),
 			Authentication_Type : d.Get("auth_type").(int),
 			Http_Method: d.Get("http_method").(int),
 			External_Url: d.Get("external_url").(string),
 			Content : d.Get("content").(string),
 			Content_Type : d.Get("content_type").(string),
-			Filter : {
+			Filter : assembla.Filter {
 				Code : d.Get("post_about_code").(string),
 				Code_Reviews: d.Get("post_about_code_reviews").(string),
 				Build_Tool: d.Get("post_about_build_tool").(string),
@@ -164,7 +165,7 @@ func resourceUpdateWebhook(d *schema.ResourceData,m interface{}) error{
 			},
 		},
 	}
-	wh,_,err := assembla.Webhooks.UpdateWebhook(d.Get("space_name").(string),whId,createWh)
+	_,_,err := apiClient.Webhooks.UpdateWebhook(d.Get("space_name").(string),whId,createWh)
 	if err != nil{
 		return err
 	}
@@ -174,7 +175,7 @@ func resourceUpdateWebhook(d *schema.ResourceData,m interface{}) error{
 func resourceDeleteWebhook(d *schema.ResourceData,m interface{}) error{
 	apiClient := m.(*assembla.Client)
 	whId := d.Id()
-	err := assembla.Webhooks.DeleteWebhook(d.Get("space_name").(string),whId)
+	_,err := apiClient.Webhooks.DeleteWebhook(d.Get("space_name").(string),whId)
 	if err != nil{
 		return err
 	}
